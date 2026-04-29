@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Totem Endowment Fund</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy:       #1A3A52;
+      --dark:       #0A1A26;
+      --darker:     #060F18;
+      --gold:       #B8941F;
+      --gold-light: #C9A84C;
+      --ivory:      #F5F3F0;
+      --ivory-dim:  #E8E4DE;
+      --forest:     #2D5F4F;
+      --text-light: #F0EDE8;
+      --text-muted: #8A9BAA;
+      --text-dark:  #1A1A1A;
+      --border:     rgba(184,148,31,0.25);
+      --ease-cin:   cubic-bezier(0.76, 0, 0.24, 1);
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--darker);
+      color: var(--text-light);
+    }
+
+    /* ── NOISE TEXTURE ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      height: 64px;
+      position: relative;
+    }
+
+    .nav-logo img {
+      height: 100%;
+      width: auto;
+      display: block;
+      transition: opacity 0.4s ease;
+    }
+
+    .nav-logo .logo-light {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+    }
+
+    /* When body has the "panel-light-active" class, swap logos */
+    body.panel-light-active .nav-logo .logo-dark { opacity: 0; }
+    body.panel-light-active .nav-logo .logo-light { opacity: 1; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .nav-counter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      min-width: 60px;
+    }
+
+    .nav-counter span { color: var(--gold-light); }
+
+    .nav-cta {
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 10px 24px;
+      transition: all 0.3s var(--ease-cin);
+    }
+
+    .nav-cta:hover {
+      border-color: var(--gold);
+      color: var(--gold-light);
+    }
+
+    /* When on light panel, flip nav text to dark */
+    body.panel-light-active .nav-counter { color: rgba(26,58,82,0.6); }
+    body.panel-light-active .nav-counter span { color: var(--gold); }
+    body.panel-light-active .nav-cta { color: var(--navy); border-color: rgba(26,58,82,0.3); }
+    body.panel-light-active .nav-cta:hover { border-color: var(--gold); color: var(--gold-deep, #8C7235); }
+
+    /* ── SLIDER CONTAINER ── */
+    .slider {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slides-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.85s var(--ease-cin);
+      will-change: transform;
+    }
+
+    /* ── PANEL BASE ── */
+    .panel {
+      width: 100vw;
+      height: 100vh;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 80px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── PANEL 1: ENTRY ── */
+    .panel-entry {
+      background: var(--darker);
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .panel-entry::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 50% 40%, rgba(26,58,82,0.6) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(184,148,31,0.08) 0%, transparent 60%);
+    }
+
+    .totem-mark {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 48px;
+    }
+
+    .totem-mark svg {
+      width: 64px;
+      height: 64px;
+      opacity: 0;
+      animation: fadeUp 1.2s var(--ease-cin) 0.3s forwards;
+    }
+
+    .entry-eyebrow {
+      position: relative;
+      z-index: 1;
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 1s var(--ease-cin) 0.6s forwards;
+    }
+
+    .entry-headline {
+      position: relative;
+      z-index: 1;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(52px, 7vw, 88px);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--text-light);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 1s var(--ease-cin) 0.9s forwards;
+    }
+
+    .entry-headline em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .entry-sub {
+      position: relative;
+      z-index: 1;
+      font-size: 16px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 64px;
+      opacity: 0;
+      animation: fadeUp 1s var(--ease-cin) 1.1s forwards;
+    }
+
+    .entry-arrow {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      opacity: 0;
+      animation: fadeUp 1s var(--ease-cin) 1.4s forwards;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+    }
+
+    .entry-arrow:hover { color: var(--gold-light); }
+
+    .arrow-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: pulse-line 2s ease-in-out infinite 2s;
+    }
+
+    @keyframes pulse-line {
+      0%, 100% { opacity: 0.4; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.1); }
+    }
+
+    /* ── PANEL 2: PROBLEM ── */
+    .panel-problem {
+      background: var(--dark);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0;
+      align-items: stretch;
+      padding: 100px 80px 100px;
+    }
+
+    .panel-problem::after { display: none; }
+
+    .problem-left {
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+      padding-right: 80px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .problem-left::-webkit-scrollbar { width: 4px; }
+    .problem-left::-webkit-scrollbar-thumb { background: var(--border); }
+
+    .panel-problem .panel-label {
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      margin-bottom: 32px;
+    }
+
+    .panel-problem .panel-headline {
+      font-size: clamp(48px, 4.8vw, 76px);
+      line-height: 1.04;
+      margin-bottom: 28px;
+      letter-spacing: -0.02em;
+    }
+
+    .panel-problem .gold-rule {
+      width: 64px;
+      margin: 28px 0 36px;
+    }
+
+    .panel-problem .panel-body {
+      font-size: 16px;
+      line-height: 1.75;
+      max-width: 620px;
+      color: var(--text-muted);
+    }
+
+    .panel-problem .panel-body--lead {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.5;
+      color: var(--text-light);
+      margin-bottom: 32px;
+      max-width: 620px;
+    }
+
+    .panel-problem .panel-body strong {
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .panel-problem .panel-body em {
+      font-style: normal;
+      color: var(--gold-light);
+    }
+
+    /* ── 7% VS 15% PAYOUT COMPARISON ── */
+    .problem-right {
+      padding-left: 80px;
+      padding-right: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .payout-eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 48px;
+      display: block;
+    }
+
+    .payout-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      gap: 0;
+      margin-bottom: 56px;
+      position: relative;
+    }
+
+    .payout-compare::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 8%;
+      bottom: 18%;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .payout-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+      padding-right: 32px;
+    }
+
+    .payout-cell--high {
+      align-items: flex-start;
+      padding-right: 0;
+      padding-left: 48px;
+    }
+
+    .payout-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(160px, 18vw, 320px);
+      font-weight: 300;
+      line-height: 0.82;
+      color: rgba(138,155,170,0.28);
+      letter-spacing: -0.06em;
+      display: block;
+    }
+
+    .payout-number .pct {
+      font-size: 0.42em;
+      vertical-align: super;
+      letter-spacing: 0;
+      margin-left: -0.05em;
+    }
+
+    .payout-number--gold { color: var(--gold-light); }
+
+    .payout-label {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 220px;
+    }
+
+    .payout-cell--high .payout-label { color: var(--text-light); }
+
+    .payout-caption {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.5;
+      color: var(--text-light);
+      max-width: 540px;
+      padding-top: 36px;
+      border-top: 1px solid var(--border);
+    }
+
+    .payout-caption em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .panel-label {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    .panel-headline {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.2;
+      color: var(--text-light);
+      margin-bottom: 28px;
+      letter-spacing: -0.01em;
+    }
+
+    .panel-headline em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .panel-body {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-muted);
+      max-width: 440px;
+    }
+
+    .gold-rule {
+      width: 48px;
+      height: 1px;
+      background: var(--gold);
+      margin: 32px 0;
+    }
+
+    /* ── PANEL 3: HOW IT WORKS ── */
+    .panel-how {
+      background: var(--darker);
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 100px 80px 100px;
+    }
+
+    .panel-how .panel-label { margin-bottom: 24px; }
+    .panel-how .panel-headline {
+      margin-bottom: 88px;
+      font-size: clamp(48px, 5vw, 80px);
+      line-height: 1.04;
+    }
+
+    .cycle-track {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.35fr 1fr;
+      align-items: flex-start;
+      gap: 32px;
+      width: 100%;
+    }
+
+    .cycle-step {
+      position: relative;
+      padding-top: 12px;
+    }
+
+    /* The connector rule between steps */
+    .cycle-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 56px;
+      left: 88px;
+      right: -16px;
+      height: 1px;
+      background: linear-gradient(to right, rgba(184,148,31,0.6) 0%, rgba(184,148,31,0.25) 100%);
+      z-index: 0;
+    }
+
+    .cycle-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 88px;
+      font-weight: 300;
+      color: rgba(201,168,76,0.55);
+      line-height: 1;
+      margin-bottom: 32px;
+      position: relative;
+      z-index: 1;
+      display: inline-block;
+      background: var(--darker);
+      padding-right: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .cycle-title {
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    .cycle-desc {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-muted);
+      max-width: 260px;
+      margin-bottom: 24px;
+    }
+
+    .cycle-duration {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      background: rgba(184,148,31,0.12);
+      border: 1px solid rgba(184,148,31,0.5);
+      padding: 7px 16px;
+      font-weight: 500;
+    }
+
+    /* Step 03 — the visual anchor */
+    .cycle-step--anchor {
+      padding-top: 0;
+      position: relative;
+    }
+
+    .cycle-step--anchor::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: 0;
+      width: 56px;
+      height: 2px;
+      background: var(--gold-light);
+    }
+
+    .cycle-step--anchor .cycle-num {
+      font-size: 112px;
+      color: var(--gold-light);
+      margin-top: 12px;
+      margin-bottom: 36px;
+    }
+
+    .cycle-step--anchor .cycle-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px;
+      letter-spacing: -0.01em;
+      text-transform: none;
+      font-weight: 400;
+      color: var(--text-light);
+      margin-bottom: 20px;
+      line-height: 1.15;
+    }
+
+    .cycle-step--anchor .cycle-title em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .cycle-step--anchor .cycle-desc {
+      font-size: 16px;
+      color: var(--text-light);
+      max-width: 320px;
+      line-height: 1.65;
+    }
+
+    .cycle-step--anchor .cycle-desc strong {
+      color: var(--gold-light);
+      font-weight: 500;
+    }
+
+    .cycle-step--anchor .cycle-duration {
+      color: var(--darker);
+      background: var(--gold-light);
+      border-color: var(--gold-light);
+    }
+
+    /* Adjust the connector that crosses INTO step 03 — make it gold */
+    .cycle-step:nth-child(2)::after {
+      background: linear-gradient(to right, rgba(184,148,31,0.6) 0%, var(--gold-light) 100%);
+      top: 56px;
+    }
+
+    /* Adjust the connector OUT of step 03 — start gold, fade to standard */
+    .cycle-step--anchor::after {
+      top: 68px !important;
+      left: 108px !important;
+      background: linear-gradient(to right, var(--gold-light) 0%, rgba(184,148,31,0.25) 100%) !important;
+    }
+
+    /* ── PANEL 4: YOUR CAPITAL (LIGHT) ── */
+    /* Note on hero scale: the cream background visually shrinks type compared to
+       the navy panels. The headline here is intentionally larger than panel 2's
+       to achieve equivalent perceived weight. */
+    .panel-capital {
+      background: var(--ivory);
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 64px;
+      align-items: center;
+      padding: 100px 120px 100px 80px;
+    }
+
+    .capital-left .panel-label {
+      color: var(--navy);
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      margin-bottom: 32px;
+    }
+
+    .capital-left .panel-headline {
+      color: var(--navy);
+      font-size: clamp(56px, 6vw, 96px);
+      line-height: 1.02;
+      margin-bottom: 28px;
+      letter-spacing: -0.025em;
+    }
+
+    .capital-left .gold-rule {
+      width: 64px;
+      margin: 28px 0 36px;
+    }
+
+    .capital-left .panel-body {
+      color: #555;
+      font-size: 16px;
+      line-height: 1.75;
+      max-width: 540px;
+    }
+
+    .capital-right {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid rgba(26,58,82,0.18);
+    }
+
+    .capital-feature {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 36px 40px;
+      border-right: 1px solid rgba(26,58,82,0.18);
+      border-bottom: 1px solid rgba(26,58,82,0.18);
+      min-height: 220px;
+    }
+
+    .capital-feature:nth-child(2n) { border-right: none; }
+    .capital-feature:nth-last-child(-n+2) { border-bottom: none; }
+
+    .capital-feature-accent {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(56px, 5.5vw, 96px);
+      font-weight: 300;
+      line-height: 0.88;
+      color: var(--gold);
+      letter-spacing: -0.04em;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .capital-feature-title {
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--navy);
+      font-weight: 600;
+    }
+
+    .capital-feature-text {
+      font-size: 14px;
+      line-height: 1.65;
+      color: #555;
+      margin-top: 4px;
+      max-width: 280px;
+    }
+
+    /* ── PANEL 5: TRUST (merged from former panels 5 + 6) ── */
+    .panel-trust {
+      background: var(--navy);
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 80px;
+      align-items: center;
+      padding: 100px 80px 100px;
+    }
+
+    .trust-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .trust-left .panel-label {
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      margin-bottom: 32px;
+    }
+
+    .trust-left .panel-headline {
+      font-size: clamp(48px, 4.8vw, 76px);
+      line-height: 1.04;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .trust-since {
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 16px;
+      margin-bottom: 28px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      display: block;
+    }
+
+    .trust-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px 40px;
+      margin-bottom: 36px;
+    }
+
+    .trust-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .trust-stat--wide {
+      grid-column: 1 / -1;
+    }
+
+    .trust-stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(40px, 4.4vw, 60px);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      color: var(--text-light);
+    }
+
+    .trust-stat-num.gold { color: var(--gold-light); }
+
+    .trust-stat-label {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .trust-closer {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--text-light);
+      max-width: 540px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+    }
+
+    .trust-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 64px;
+      border-left: 1px solid var(--border);
+    }
+
+    .trust-right .panel-label {
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      margin-bottom: 36px;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .compare-table th {
+      font-size: 13px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 0 0 24px 0;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-weight: 500;
+    }
+
+    .compare-table th:last-child { color: var(--gold); }
+
+    .compare-table td {
+      font-size: 18px;
+      color: var(--text-muted);
+      padding: 28px 0;
+      border-bottom: 1px solid rgba(42,74,98,0.4);
+      vertical-align: middle;
+    }
+
+    .compare-table td:first-child { color: var(--text-light); font-weight: 500; }
+    .compare-table td:last-child { color: var(--text-light); font-weight: 500; }
+
+    .check { color: var(--gold-light); }
+    .cross { color: rgba(138,155,170,0.5); }
+
+    /* ── PANEL 6: CTA (form panel) ── */
+    .panel-cta {
+      background: var(--darker);
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: 80px;
+      align-items: center;
+      padding: 100px 80px 100px;
+      text-align: left;
+    }
+
+    .panel-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 30% 50%, rgba(184,148,31,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-left {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+      display: block;
+    }
+
+    .cta-headline {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(48px, 4.8vw, 76px);
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      color: var(--text-light);
+      margin-bottom: 28px;
+    }
+
+    .cta-headline em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .cta-left .gold-rule {
+      width: 64px;
+      margin: 28px 0 36px;
+    }
+
+    .cta-sub {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin-bottom: 32px;
+    }
+
+    .cta-contact {
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      line-height: 1.7;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      max-width: 520px;
+    }
+
+    .cta-contact a {
+      color: var(--gold-light);
+      text-decoration: none;
+    }
+
+    .cta-contact a:hover { color: var(--gold); }
+
+    /* ── FORM ── */
+    .cta-form {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 48px 48px 44px;
+      background: rgba(26,58,82,0.35);
+      border: 1px solid var(--border);
+    }
+
+    .cta-form-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.4;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    .cta-form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .cta-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cta-field label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .cta-field input {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text-light);
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0 10px;
+      transition: border-color 0.3s var(--ease-cin);
+      outline: none;
+    }
+
+    .cta-field input:focus {
+      border-bottom-color: var(--gold-light);
+    }
+
+    .cta-field input::placeholder {
+      color: rgba(138,155,170,0.4);
+    }
+
+    .cta-form-submit {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--darker);
+      background: var(--gold-light);
+      border: none;
+      padding: 18px 32px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s var(--ease-cin);
+      display: inline-block;
+      margin-top: 12px;
+      font-weight: 500;
+    }
+
+    .cta-form-submit:hover {
+      background: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .cta-form-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+      line-height: 1.6;
+    }
+
+    .cta-form-success {
+      display: none;
+      padding: 48px 48px;
+      background: rgba(26,58,82,0.35);
+      border: 1px solid var(--gold);
+      text-align: center;
+    }
+
+    .cta-form-success.is-visible { display: block; }
+    .cta-form.is-hidden { display: none; }
+
+    .cta-form-success-icon {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 56px;
+      color: var(--gold-light);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .cta-form-success-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      color: var(--text-light);
+      margin-bottom: 12px;
+    }
+
+    .cta-form-success-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    /* ── NAVIGATION DOTS ── */
+    .dots {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border: 1px solid rgba(240,237,232,0.3);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: transparent;
+    }
+
+    .dot.active {
+      background: var(--gold-light);
+      border-color: var(--gold-light);
+      transform: scale(1.3);
+    }
+
+    /* ── ARROW NAV ── */
+    .nav-arrows {
+      position: fixed;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 100;
+    }
+
+    .arrow-btn {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      background: transparent;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+
+    .arrow-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold-light);
+    }
+
+    .arrow-btn:disabled { opacity: 0.2; cursor: default; }
+    .arrow-btn:disabled:hover { border-color: var(--border); color: var(--text-muted); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── FOOTER STRIP ── */
+    .footer-strip {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 99;
+      pointer-events: none;
+    }
+
+    .footer-legal {
+      font-size: 10px;
+      color: rgba(138,155,170,0.5);
+      letter-spacing: 0.05em;
+      max-width: 400px;
+      line-height: 1.5;
+    }
+
+    .footer-contact {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      pointer-events: all;
+    }
+
+    .footer-contact a { color: var(--gold-light); text-decoration: none; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      html, body { overflow: auto; }
+      .slider { overflow: visible; height: auto; }
+      .slides-track { flex-direction: column; transform: none !important; transition: none; }
+      .panel { width: 100%; height: auto; min-height: 100vh; padding: 100px 24px 80px; }
+      .panel-problem, .panel-capital, .panel-trust, .panel-cta { grid-template-columns: 1fr; }
+      .cta-form { padding: 32px 24px; }
+      .panel-problem::after { display: none; }
+      .nav-arrows { display: none; }
+      .cycle-track { flex-direction: column; gap: 40px; }
+      .cycle-step::after { display: none; }
+      .trust-right { padding-left: 0; border-left: none; padding-top: 48px; border-top: 1px solid var(--border); }
+      .footer-strip { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slides-track { transition: none; }
+      * { animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo" aria-label="Totem LCG FlexEndowment">
+      <img src="flexendowment-logo.png" alt="Totem LCG FlexEndowment" class="logo-dark">
+      <img src="flexendowment-logo-light.png" alt="" class="logo-light" aria-hidden="true">
+    </a>
+    <div class="nav-right">
+      <span class="nav-counter"><span id="current-slide">01</span> / 06</span>
+      <a href="#panel-cta" class="nav-cta" id="nav-cta-btn">Request a Conversation</a>
+    </div>
+  </nav>
+
+  <!-- SLIDER -->
+  <div class="slider">
+    <div class="slides-track" id="track">
+
+      <!-- PANEL 1: ENTRY -->
+      <div class="panel panel-entry">
+        <div class="totem-mark">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="32,4 60,56 4,56" fill="none" stroke="#B8941F" stroke-width="1.5"/>
+            <polygon points="32,18 50,50 14,50" fill="none" stroke="#B8941F" stroke-width="1" opacity="0.5"/>
+            <line x1="32" y1="4" x2="32" y2="56" stroke="#B8941F" stroke-width="0.75" opacity="0.4"/>
+            <circle cx="32" cy="32" r="3" fill="#B8941F"/>
+          </svg>
+        </div>
+        <span class="entry-eyebrow">A New Standard for Philanthropic Capital</span>
+        <h1 class="entry-headline">Capital Preserved.<br>Nonprofits <em>Empowered.</em><br>Impact Measured.</h1>
+        <p class="entry-sub">For donors who expect more.</p>
+        <button class="entry-arrow" onclick="goTo(1)">
+          <span>Discover</span>
+          <div class="arrow-line"></div>
+        </button>
+      </div>
+
+      <!-- PANEL 2: THE PROBLEM -->
+      <div class="panel panel-problem">
+        <div class="problem-left">
+          <span class="panel-label">The Problem with Traditional Endowments</span>
+          <h2 class="panel-headline">You built something<br>that <em>matters.</em><br>Your capital should too.</h2>
+          <div class="gold-rule"></div>
+          <p class="panel-body panel-body--lead">Most donors don't ask the right questions about endowments. The structure depends on it.</p>
+          <p class="panel-body" style="margin-bottom:24px;"><strong>Here's what you were trained to accept.</strong> Your capital is given away forever. Your nonprofit choice is permanent. Your impact is measured by an annual letter. The fees that come out before the giving begins are unavoidable. And when the markets fall, your generosity falls with them.</p>
+          <p class="panel-body" style="margin-bottom:24px;"><strong>Here's what Totem's FlexEndowment offers instead.</strong> Your capital is preserved, not surrendered. If you ever need it, you are never more than 90 days away from your money. Your nonprofit choice is yours to change whenever you want. Your impact is measured in cash distributions every 90 days, not market-dependent estimates on an annual letter.</p>
+          <p class="panel-body">And the math is not close. Traditional endowments distribute up to 7% annually to their nonprofits. <em>Totem distributes 15%.</em> The difference is not a marketing claim. It is structural. We fund insured commercial transactions instead of paying ourselves a management fee. Nobody is collecting in the middle, so the giving doesn't have to be cut in half before it reaches the cause.</p>
+        </div>
+        <div class="problem-right">
+          <span class="payout-eyebrow">The Math, Side by Side</span>
+          <div class="payout-compare">
+            <div class="payout-cell payout-cell--low">
+              <span class="payout-number">7<span class="pct">%</span></span>
+              <span class="payout-label">What most endowments<br>pay nonprofits</span>
+            </div>
+            <div class="payout-cell payout-cell--high">
+              <span class="payout-number payout-number--gold">15<span class="pct">%</span></span>
+              <span class="payout-label">What Totem<br>FlexEndowment<br>pays nonprofits</span>
+            </div>
+          </div>
+          <p class="payout-caption">More than <em>double</em> the impact, with none of the surrender. The difference is structural, not promotional.</p>
+        </div>
+      </div>
+
+      <!-- PANEL 3: HOW IT WORKS -->
+      <div class="panel panel-how">
+        <span class="panel-label">Totem's Capital Cycle</span>
+        <h2 class="panel-headline">Funded by commerce,<br>not <em>charity.</em></h2>
+        <div class="cycle-track">
+          <div class="cycle-step">
+            <span class="cycle-num">01</span>
+            <div class="cycle-title">Donor Deposit</div>
+            <p class="cycle-desc">You contribute to a dedicated account within the endowment. Your principal remains yours.</p>
+            <span class="cycle-duration">Day 0</span>
+          </div>
+          <div class="cycle-step">
+            <span class="cycle-num">02</span>
+            <div class="cycle-title">Deployment</div>
+            <p class="cycle-desc">Totem deploys funds on a verified Fortune 500 purchase order, fully insured by Euler Hermes and AIG.</p>
+            <span class="cycle-duration">Day 1–5</span>
+          </div>
+          <div class="cycle-step cycle-step--anchor">
+            <span class="cycle-num">03</span>
+            <div class="cycle-title">Your Money. <em>Your Call.</em></div>
+            <p class="cycle-desc">Once your funds are deployed, they keep working without your input. <strong>One signature a year</strong> is all we need. If you change your mind about the recipient, or you need your principal back, you just let us know. We switch at a moment's notice.</p>
+            <span class="cycle-duration">Anytime</span>
+          </div>
+          <div class="cycle-step">
+            <span class="cycle-num">04</span>
+            <div class="cycle-title">Impact Distribution</div>
+            <p class="cycle-desc">Returns are split: 75% to your chosen nonprofit, 25% to grow the endowment fund. You choose the cause.</p>
+            <span class="cycle-duration">Day 100</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 4: YOUR CAPITAL (LIGHT) -->
+      <div class="panel panel-capital">
+        <div class="capital-left">
+          <span class="panel-label" style="color:var(--navy);">Your Capital. Your Control.</span>
+          <h2 class="panel-headline" style="color:var(--navy);">This is not a<br>permanent <em style="color:var(--gold);">gift.</em></h2>
+          <div class="gold-rule"></div>
+          <p class="panel-body" style="color:#555;">
+            FlexEndowment is structured so participating donors retain full rights to their contributed capital. Your principal stays yours. Always within 90 days of your call.
+          </p>
+        </div>
+        <div class="capital-right">
+          <div class="capital-feature">
+            <span class="capital-feature-accent">100%</span>
+            <span class="capital-feature-title">Protected</span>
+            <p class="capital-feature-text">Every dollar is fully insured and available within 90 days. Your wealth is not consumed, it works.</p>
+          </div>
+          <div class="capital-feature">
+            <span class="capital-feature-accent">90 Days</span>
+            <span class="capital-feature-title">Never Locked</span>
+            <p class="capital-feature-text">Traditional endowments lock capital in perpetuity. FlexEndowment keeps your principal accessible, always within 90 days of your call.</p>
+          </div>
+          <div class="capital-feature">
+            <span class="capital-feature-accent">You Choose</span>
+            <span class="capital-feature-title">The Nonprofit</span>
+            <p class="capital-feature-text">You name the beneficiary and can redirect future distributions to a different nonprofit at any time.</p>
+          </div>
+          <div class="capital-feature">
+            <span class="capital-feature-accent">Zero</span>
+            <span class="capital-feature-title">Overhead</span>
+            <p class="capital-feature-text">Impact is funded by commercial returns, no administrative burden. Real program funding, no overhead.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 5: TRUST (merged from former panels 5 + 6) -->
+      <div class="panel panel-trust">
+        <div class="trust-left">
+          <span class="panel-label">Multi-Layer Risk Framework</span>
+          <h2 class="panel-headline" style="color:var(--text-light);">Built for trust.<br><em>Proven by performance.</em></h2>
+          <span class="trust-since">Since 2023, Totem has had:</span>
+          <div class="trust-stats">
+            <div class="trust-stat">
+              <span class="trust-stat-num gold">2,000+</span>
+              <span class="trust-stat-label">Transactions Completed</span>
+            </div>
+            <div class="trust-stat">
+              <span class="trust-stat-num gold">$12M+</span>
+              <span class="trust-stat-label">Capital Deployed</span>
+            </div>
+            <div class="trust-stat">
+              <span class="trust-stat-num">Zero</span>
+              <span class="trust-stat-label">Claims Filed</span>
+            </div>
+            <div class="trust-stat">
+              <span class="trust-stat-num">Zero</span>
+              <span class="trust-stat-label">Default Rate, All-Time</span>
+            </div>
+            <div class="trust-stat trust-stat--wide">
+              <span class="trust-stat-num gold">100 Days</span>
+              <span class="trust-stat-label">Per Transaction Cycle, Average</span>
+            </div>
+          </div>
+          <p class="trust-closer">Every transaction is insured. Every dollar is tracked. The structure has run for years without a loss.</p>
+        </div>
+        <div class="trust-right">
+          <span class="panel-label" style="color:var(--gold);">How We Compare</span>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Traditional</th>
+                <th>Totem</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Capital Risk</td>
+                <td><span class="cross">Market exposed</span></td>
+                <td><span class="check">Insured</span></td>
+              </tr>
+              <tr>
+                <td>Liquidity</td>
+                <td><span class="cross">Permanently locked</span></td>
+                <td><span class="check">90-day access</span></td>
+              </tr>
+              <tr>
+                <td>Transparency</td>
+                <td><span class="cross">Annual opaque reports</span></td>
+                <td><span class="check">Verified PO docs</span></td>
+              </tr>
+              <tr>
+                <td>Nonprofit Choice</td>
+                <td><span class="cross">Board-determined</span></td>
+                <td><span class="check">Donor selects</span></td>
+              </tr>
+              <tr>
+                <td>Impact Tracking</td>
+                <td><span class="cross">Rarely quantified</span></td>
+                <td><span class="check">Cycle-level reporting</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PANEL 6: CTA (form) -->
+      <div class="panel panel-cta" id="panel-cta">
+        <div class="cta-left">
+          <span class="cta-eyebrow">A Conversation Worth Having</span>
+          <h2 class="cta-headline">Gifts of this magnitude<br>require <em>clarity,</em> trust,<br>and time.</h2>
+          <div class="gold-rule"></div>
+          <p class="cta-sub">Totem does not ask for a quick decision. We ask for a conversation. Walk through an active transaction cycle, meet our insurance framework, and connect with a nonprofit whose mission matches yours.</p>
+          <p class="cta-contact">All conversations are strictly confidential. No obligation.<br>
+            <a href="mailto:partnerships@totemlcg.com">partnerships@totemlcg.com</a> &nbsp;|&nbsp; <a href="https://www.totemlcg.com" target="_blank" rel="noopener">www.totemlcg.com</a>
+          </p>
+        </div>
+
+        <form class="cta-form" id="cta-form" action="https://formspree.io/f/mvzlpwpv" method="POST">
+          <p class="cta-form-title">Request a conversation.</p>
+
+          <div class="cta-form-row">
+            <div class="cta-field">
+              <label for="firstName">First Name</label>
+              <input type="text" id="firstName" name="firstName" required autocomplete="given-name">
+            </div>
+            <div class="cta-field">
+              <label for="lastName">Last Name</label>
+              <input type="text" id="lastName" name="lastName" required autocomplete="family-name">
+            </div>
+          </div>
+
+          <div class="cta-field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autocomplete="email">
+          </div>
+
+          <div class="cta-field">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" required autocomplete="tel">
+          </div>
+
+          <button type="submit" class="cta-form-submit">Submit Request</button>
+          <p class="cta-form-note">A member of our team will reach out within one business day.</p>
+        </form>
+
+        <div class="cta-form-success" id="cta-form-success">
+          <div class="cta-form-success-icon">&#10003;</div>
+          <h3 class="cta-form-success-title">Thank you.</h3>
+          <p class="cta-form-success-text">Your request has been received. A member of our team will reach out within one business day.</p>
+        </div>
+      </div>
+
+    </div><!-- /slides-track -->
+  </div><!-- /slider -->
+
+  <!-- DOTS -->
+  <div class="dots" id="dots"></div>
+
+  <!-- ARROW NAV -->
+  <div class="nav-arrows">
+    <button class="arrow-btn" id="btn-prev" onclick="goTo(current - 1)" disabled>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L8 14M8 2L3 7M8 2L13 7" stroke="currentColor" stroke-width="1.5"/></svg>
+    </button>
+    <button class="arrow-btn" id="btn-next" onclick="goTo(current + 1)">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 14L8 2M8 14L3 9M8 14L13 9" stroke="currentColor" stroke-width="1.5"/></svg>
+    </button>
+  </div>
+
+  <!-- FOOTER STRIP -->
+  <div class="footer-strip">
+    <p class="footer-legal">For informational purposes only. Not an offer to sell or solicitation. All conversations are strictly confidential. Totem LC Group, LLC. © 2026</p>
+    <span class="footer-contact"><a href="mailto:partnerships@totemlcg.com">partnerships@totemlcg.com</a></span>
+  </div>
+
+  <script>
+    const TOTAL = 6;
+    let current = 0;
+    let isAnimating = false;
+
+    const track = document.getElementById('track');
+    const dotsEl = document.getElementById('dots');
+    const slideCounter = document.getElementById('current-slide');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+
+    // Build dots
+    for (let i = 0; i < TOTAL; i++) {
+      const d = document.createElement('button');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.setAttribute('aria-label', `Go to panel ${i + 1}`);
+      d.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(d);
+    }
+
+    // Panels with light backgrounds — add their indices here so the nav logo swaps
+    const LIGHT_PANELS = [3]; // panel index 3 = panel 4 (capital, ivory)
+
+    function goTo(index) {
+      if (index < 0 || index >= TOTAL || isAnimating) return;
+      isAnimating = true;
+      current = index;
+
+      track.style.transform = `translateX(-${current * 100}vw)`;
+      slideCounter.textContent = String(current + 1).padStart(2, '0');
+
+      document.querySelectorAll('.dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
+      });
+
+      btnPrev.disabled = current === 0;
+      btnNext.disabled = current === TOTAL - 1;
+
+      // Swap nav logo for light panels
+      document.body.classList.toggle('panel-light-active', LIGHT_PANELS.includes(current));
+
+      setTimeout(() => { isAnimating = false; }, 900);
+    }
+
+    // Keyboard nav
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goTo(current - 1);
+    });
+
+    // Touch/swipe
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', e => {
+      const dx = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(dx) > 60) goTo(current + (dx > 0 ? 1 : -1));
+    });
+
+    // Scroll wheel — detect gesture boundaries on trackpad/Magic Mouse
+    // Trackpads fire many wheel events per swipe with deltas that taper.
+    // We watch for a pause in scrolling (the gesture ending) before allowing the next advance.
+    let scrollLocked = false;
+    let scrollResetTimer = null;
+    let lastDelta = 0;
+
+    document.addEventListener('wheel', e => {
+      const delta = e.deltaY;
+      const absDelta = Math.abs(delta);
+
+      // Ignore tiny inertia tail-off events
+      if (absDelta < 8) return;
+
+      // If we're locked, just keep resetting the unlock timer.
+      // The lock only releases after the user has stopped scrolling for 200ms.
+      if (scrollLocked) {
+        clearTimeout(scrollResetTimer);
+        scrollResetTimer = setTimeout(() => {
+          scrollLocked = false;
+        }, 200);
+        return;
+      }
+
+      // First strong scroll event in a new gesture: advance one panel
+      scrollLocked = true;
+      lastDelta = delta;
+      goTo(current + (delta > 0 ? 1 : -1));
+
+      // Wait for the gesture to fully end before allowing another advance
+      scrollResetTimer = setTimeout(() => {
+        scrollLocked = false;
+      }, 200);
+    }, { passive: true });
+
+    // Nav button: jump to the form panel (last panel)
+    const navCtaBtn = document.getElementById('nav-cta-btn');
+    if (navCtaBtn) {
+      navCtaBtn.addEventListener('click', e => {
+        e.preventDefault();
+        goTo(TOTAL - 1);
+      });
+    }
+
+    // Form submission: send to Formspree via fetch, show inline thank-you on success
+    const ctaForm = document.getElementById('cta-form');
+    const ctaFormSuccess = document.getElementById('cta-form-success');
+    if (ctaForm) {
+      ctaForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        const submitBtn = ctaForm.querySelector('.cta-form-submit');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
+
+        try {
+          const response = await fetch(ctaForm.action, {
+            method: 'POST',
+            body: new FormData(ctaForm),
+            headers: { 'Accept': 'application/json' }
+          });
+          if (response.ok) {
+            ctaForm.classList.add('is-hidden');
+            ctaFormSuccess.classList.add('is-visible');
+          } else {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            alert('Submission failed. Please email partnerships@totemlcg.com directly.');
+          }
+        } catch (err) {
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+          alert('Submission failed. Please email partnerships@totemlcg.com directly.');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
