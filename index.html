@@ -1137,19 +1137,210 @@
     .footer-contact a { color: var(--gold-light); text-decoration: none; }
 
     /* ── MOBILE ── */
+    /* ────────────────────────────────────────────
+       MOBILE (vertical scroll experience)
+       ──────────────────────────────────────────── */
     @media (max-width: 768px) {
-      html, body { overflow: auto; }
-      .slider { overflow: visible; height: auto; }
-      .slides-track { flex-direction: column; transform: none !important; transition: none; }
-      .panel { width: 100%; height: auto; min-height: 100vh; padding: 100px 24px 80px; }
-      .panel-problem, .panel-capital, .panel-trust, .panel-cta { grid-template-columns: 1fr; }
-      .cta-form { padding: 32px 24px; }
-      .panel-problem::after { display: none; }
+      /* Allow normal vertical scrolling */
+      html, body { overflow: auto; height: auto; }
+      .slider { overflow: visible; height: auto; width: 100%; }
+      .slides-track {
+        flex-direction: column;
+        transform: none !important;
+        transition: none;
+        height: auto;
+      }
+
+      /* Panels become vertical sections */
+      .panel {
+        width: 100%;
+        height: auto;
+        min-height: auto;
+        padding: 80px 24px 60px;
+        display: block;
+        overflow: visible;
+      }
+
+      /* Hide all desktop slider chrome */
       .nav-arrows { display: none; }
-      .cycle-track { flex-direction: column; gap: 40px; }
-      .cycle-step::after { display: none; }
-      .trust-right { padding-left: 0; border-left: none; padding-top: 48px; border-top: 1px solid var(--border); }
+      .dots { display: none; }
       .footer-strip { display: none; }
+      .nav-counter { display: none; }
+
+      /* Nav adjustments */
+      nav { padding: 16px 20px; }
+      .nav-logo { height: 44px; }
+      .nav-cta {
+        font-size: 10px;
+        padding: 8px 14px;
+        letter-spacing: 0.12em;
+      }
+
+      /* PANEL 1: ENTRY */
+      .panel-entry { padding: 100px 24px 80px; min-height: 100vh; }
+      .entry-headline { font-size: clamp(36px, 9vw, 48px); }
+      .entry-sub { font-size: 14px; margin-bottom: 40px; }
+      .totem-mark { margin-bottom: 32px; }
+      .totem-mark svg { width: 48px; height: 48px; }
+
+      /* PANEL 2: PROBLEM */
+      .panel-problem {
+        display: block;
+        padding: 60px 24px;
+      }
+      .panel-problem::after { display: none; }
+      .problem-left {
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
+        border-right: none;
+        margin-bottom: 56px;
+      }
+      .panel-problem .panel-headline {
+        font-size: clamp(34px, 8.5vw, 44px);
+      }
+      .panel-problem .panel-body--lead { font-size: 17px; }
+      .panel-problem .panel-body { font-size: 15px; }
+      .problem-right {
+        padding-left: 0;
+        padding-right: 0;
+      }
+      .payout-eyebrow { margin-bottom: 28px; }
+      .payout-compare {
+        grid-template-columns: 1fr 1fr;
+        margin-bottom: 36px;
+      }
+      .payout-compare::before {
+        left: 50%;
+        top: 10%;
+        bottom: 10%;
+      }
+      .payout-cell { padding-right: 16px; gap: 14px; }
+      .payout-cell--high { padding-left: 16px; }
+      .payout-number { font-size: clamp(64px, 18vw, 96px); }
+      .payout-label { font-size: 10px; max-width: 140px; }
+      .payout-caption { font-size: 16px; padding-top: 24px; }
+
+      /* PANEL 3: CAPITAL CYCLE */
+      .panel-how {
+        padding: 60px 24px;
+        align-items: stretch;
+      }
+      .panel-how .panel-headline {
+        font-size: clamp(36px, 9vw, 48px);
+        margin-bottom: 48px;
+      }
+      .cycle-track {
+        display: flex;
+        flex-direction: column;
+        gap: 36px;
+      }
+      .cycle-step { padding-top: 0; }
+      .cycle-step::after { display: none; }
+      .cycle-num { font-size: 64px; margin-bottom: 14px; padding-right: 0; }
+      .cycle-step--anchor::before { display: none; }
+      .cycle-step--anchor .cycle-num { font-size: 80px; }
+      .cycle-step--anchor .cycle-title { font-size: 26px; }
+      .cycle-desc, .cycle-step--anchor .cycle-desc { max-width: 100%; }
+      .cycle-duration { padding: 6px 14px; font-size: 10px; }
+
+      /* PANEL 4: YOUR CAPITAL (CREAM) */
+      .panel-capital {
+        display: block;
+        padding: 60px 24px;
+      }
+      .capital-left { margin-bottom: 48px; }
+      .capital-left .panel-headline {
+        font-size: clamp(40px, 10vw, 56px);
+      }
+      .capital-right {
+        grid-template-columns: 1fr;
+      }
+      .capital-feature {
+        padding: 28px 24px;
+        border-right: none !important;
+        border-bottom: 1px solid rgba(26,58,82,0.18);
+        min-height: auto;
+      }
+      .capital-feature:last-child { border-bottom: none; }
+      .capital-feature-accent {
+        font-size: clamp(48px, 14vw, 76px);
+      }
+      .capital-feature-text { max-width: 100%; }
+
+      /* PANEL 5: TRUST */
+      .panel-trust {
+        display: block;
+        padding: 60px 24px;
+      }
+      .trust-left { margin-bottom: 48px; }
+      .trust-left .panel-headline {
+        font-size: clamp(34px, 8.5vw, 44px);
+      }
+      .trust-since { font-size: 11px; margin-bottom: 20px; padding-top: 24px; }
+      .trust-stats {
+        gap: 20px 24px;
+        margin-bottom: 28px;
+      }
+      .trust-stat-num { font-size: clamp(32px, 8vw, 44px); }
+      .trust-stat-label { font-size: 10px; }
+      .trust-closer { font-size: 16px; padding-top: 24px; }
+      .trust-right {
+        padding-left: 0;
+        border-left: none;
+        padding-top: 48px;
+        border-top: 1px solid var(--border);
+      }
+      .trust-right .panel-label { margin-bottom: 28px; }
+
+      /* Comparison table on mobile: keep readable but tighter */
+      .compare-table th {
+        font-size: 11px;
+        padding-bottom: 16px;
+        letter-spacing: 0.14em;
+      }
+      .compare-table td {
+        font-size: 14px;
+        padding: 18px 6px 18px 0;
+      }
+      .compare-table td:first-child { padding-left: 0; }
+      .compare-table th:first-child { padding-right: 8px; }
+
+      /* PANEL 6: CTA / FORM */
+      .panel-cta {
+        display: block;
+        padding: 60px 24px;
+      }
+      .cta-left { margin-bottom: 40px; }
+      .cta-headline {
+        font-size: clamp(36px, 9vw, 48px);
+      }
+      .cta-sub { font-size: 15px; }
+      .cta-form { padding: 32px 24px; }
+      .cta-form-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .cta-form-title { font-size: 20px; }
+      .cta-form-submit { padding: 16px 24px; font-size: 12px; }
+
+      /* Disable per-column overflow scroll on mobile */
+      .problem-left::-webkit-scrollbar { display: none; }
+    }
+
+    /* Smaller phones (iPhone SE, etc.) */
+    @media (max-width: 380px) {
+      .panel { padding: 70px 18px 48px; }
+      .nav-logo { height: 38px; }
+      .nav-cta { font-size: 9px; padding: 7px 12px; letter-spacing: 0.1em; }
+      .entry-headline { font-size: clamp(30px, 8vw, 40px); }
+      .panel-problem .panel-headline,
+      .trust-left .panel-headline { font-size: 32px; }
+      .capital-left .panel-headline { font-size: 38px; }
+      .panel-how .panel-headline,
+      .cta-headline { font-size: 34px; }
+      .payout-number { font-size: 56px; }
+      .compare-table td { font-size: 13px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1451,6 +1642,24 @@
     // Panels with light backgrounds — add their indices here so the nav logo swaps
     const LIGHT_PANELS = [3]; // panel index 3 = panel 4 (capital, ivory)
 
+    // Mobile: observe panel 4 with IntersectionObserver to swap logo on scroll
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      const lightPanel = document.querySelector('.panel-capital');
+      if (lightPanel && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            // Swap when more than 40% of the light panel is visible
+            if (entry.intersectionRatio > 0.4) {
+              document.body.classList.add('panel-light-active');
+            } else {
+              document.body.classList.remove('panel-light-active');
+            }
+          });
+        }, { threshold: [0, 0.4, 0.6, 1] });
+        observer.observe(lightPanel);
+      }
+    }
+
     function goTo(index) {
       if (index < 0 || index >= TOTAL || isAnimating) return;
       isAnimating = true;
@@ -1472,16 +1681,24 @@
       setTimeout(() => { isAnimating = false; }, 900);
     }
 
-    // Keyboard nav
+    // Keyboard nav (desktop only)
     document.addEventListener('keydown', e => {
+      if (window.matchMedia('(max-width: 768px)').matches) return;
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
       if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goTo(current - 1);
     });
 
-    // Touch/swipe
+    // Mobile detection: vertical scroll experience on small screens
+    const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+
+    // Touch/swipe — only for horizontal slider on desktop
     let touchStartX = 0;
-    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchstart', e => {
+      if (isMobile()) return;
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
     document.addEventListener('touchend', e => {
+      if (isMobile()) return;
       const dx = touchStartX - e.changedTouches[0].clientX;
       if (Math.abs(dx) > 60) goTo(current + (dx > 0 ? 1 : -1));
     });
@@ -1489,11 +1706,14 @@
     // Scroll wheel — detect gesture boundaries on trackpad/Magic Mouse
     // Trackpads fire many wheel events per swipe with deltas that taper.
     // We watch for a pause in scrolling (the gesture ending) before allowing the next advance.
+    // Disabled on mobile so users can scroll vertically through the page normally.
     let scrollLocked = false;
     let scrollResetTimer = null;
     let lastDelta = 0;
 
     document.addEventListener('wheel', e => {
+      if (isMobile()) return;
+
       const delta = e.deltaY;
       const absDelta = Math.abs(delta);
 
@@ -1526,7 +1746,14 @@
     if (navCtaBtn) {
       navCtaBtn.addEventListener('click', e => {
         e.preventDefault();
-        goTo(TOTAL - 1);
+        if (window.matchMedia('(max-width: 768px)').matches) {
+          // Mobile: smooth scroll to the form panel
+          const formPanel = document.getElementById('panel-cta');
+          if (formPanel) formPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          // Desktop: advance the slider to the last panel
+          goTo(TOTAL - 1);
+        }
       });
     }
 
