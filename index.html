@@ -1178,11 +1178,19 @@
       }
 
       /* PANEL 1: ENTRY */
-      .panel-entry { padding: 100px 24px 80px; min-height: 100vh; }
+      .panel-entry {
+        padding: 100px 24px 80px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
       .entry-headline { font-size: clamp(36px, 9vw, 48px); }
       .entry-sub { font-size: 14px; margin-bottom: 40px; }
       .totem-mark { margin-bottom: 32px; }
       .totem-mark svg { width: 48px; height: 48px; }
+      .entry-arrow { align-self: center; }
 
       /* PANEL 2: PROBLEM */
       .panel-problem {
